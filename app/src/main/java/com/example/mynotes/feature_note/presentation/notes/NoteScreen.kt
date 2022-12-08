@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -45,7 +44,7 @@ fun NoteScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
+        Box(modifier = Modifier.padding(10.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -66,7 +65,7 @@ fun NoteScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            imageVector = Icons.Default.Build,
                             contentDescription = "Filter Notes"
                         )
                     }
@@ -79,7 +78,7 @@ fun NoteScreen(
                     OrderSection(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(padding),
                         noteOrder = state.noteOrder,
                         onOrderChange = {
                             viewModel.onEvent(NotesEvent.Order(it))

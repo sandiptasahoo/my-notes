@@ -119,7 +119,7 @@ fun AddEditNoteScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TransparentHintTextField(
                 text = titleState.text,
                 hint = titleState.hint,
@@ -132,6 +132,7 @@ fun AddEditNoteScreen(
                 },
                 isHintVisible = titleState.isHintVisible,
                 singleLine = true,
+                modifier = Modifier.padding(16.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             TransparentHintTextField(
@@ -142,11 +143,13 @@ fun AddEditNoteScreen(
                     viewModel.onEvent(AddEditNoteEvent.EnteredContent(content))
                 },
                 onFocusChange = { focusState ->
-                    viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(focusState))
+                    viewModel.onEvent(AddEditNoteEvent.ChangeContentFocus(focusState))
                 },
-                isHintVisible = titleState.isHintVisible,
+                isHintVisible = contentState.isHintVisible,
                 singleLine = true,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(16.dp)
             )
         }
     }
