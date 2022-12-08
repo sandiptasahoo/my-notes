@@ -3,6 +3,7 @@ package com.example.mynotes.feature_note.presentation.add_edit_note
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynotes.feature_note.domain.model.Note
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
-    private val useCases: NoteUseCases
+    private val useCases: NoteUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _noteTitle = mutableStateOf(
@@ -40,6 +42,27 @@ class AddEditNoteViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var currentNoteId: Int? = null
+
+    init {
+        savedStateHandle.get<Int>("noteId")?.let { noteId ->
+            if (noteId != -1) {
+                viewModelScope.launch {
+                    useCases.getNote(noteId)?.also { note ->
+                        currentNoteId = note.id
+                        _noteTitle.value = noteTitle.value.copy(
+                            text = note.title,
+                            isHintVisible = false
+                        )
+                        _noteContent.value = noteContent.value.copy(
+                            text = note.content,
+                            isHintVisible = false
+                        )
+                        _noteColor.value = note.color
+                    }
+                }
+            }
+        }
+    }
 
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {

@@ -1,7 +1,6 @@
 package com.example.mynotes.feature_note.presentation.notes
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,7 +30,7 @@ fun NoteScreen(
 ) {
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
-    //val scaffoldState = remeScaf
+    //val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -40,81 +39,84 @@ fun NoteScreen(
                 onClick = {
                     navController.navigate(Screen.AddEditNoteScreen.route)
                 },
-                Modifier.background(color = MaterialTheme.colorScheme.primary)
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Notes")
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Box(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
             ) {
-                Text(
-                    text = "Your Notes",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(NotesEvent.ToggleOrderSection)
-                    },
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Filter Notes"
+                    Text(
+                        text = "Your Notes",
+                        style = MaterialTheme.typography.headlineMedium
                     )
+                    IconButton(
+                        onClick = {
+                            viewModel.onEvent(NotesEvent.ToggleOrderSection)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Filter Notes"
+                        )
+                    }
                 }
-            }
-            AnimatedVisibility(
-                visible = state.isOrderSelectionVisible,
-                enter = fadeIn() + slideInHorizontally(),
-                exit = fadeOut() + slideOutVertically()
-            ) {
-                OrderSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    noteOrder = state.noteOrder,
-                    onOrderChange = {
-                        viewModel.onEvent(NotesEvent.Order(it))
-                    },
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(state.notes) { note ->
-                    NoteItem(
-                        note = note,
+                AnimatedVisibility(
+                    visible = state.isOrderSelectionVisible,
+                    enter = fadeIn() + slideInHorizontally(),
+                    exit = fadeOut() + slideOutVertically()
+                ) {
+                    OrderSection(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                       navController.navigate(Screen.AddEditNoteScreen.route +
-                                            "?noteId=${note.id}&noteColor=${note.color}")
-                            },
-                        onDeleteClick = {
-                            viewModel.onEvent(NotesEvent.DeleteNote(note))
-                            scope.launch {
-                                val result = snackbarHostState.showSnackbar(
-                                    message = "Note Deleted",
-                                    actionLabel = "Undo"
-                                )
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    viewModel.onEvent(NotesEvent.RestoreNote)
+                            .padding(16.dp),
+                        noteOrder = state.noteOrder,
+                        onOrderChange = {
+                            viewModel.onEvent(NotesEvent.Order(it))
+                        },
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(state.notes) { note ->
+                        NoteItem(
+                            note = note,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(
+                                        Screen.AddEditNoteScreen.route + "?noteId=${note.id}&noteColor=${note.color}"
+                                    )
+                                },
+                            onDeleteClick = {
+                                viewModel.onEvent(NotesEvent.DeleteNote(note))
+                                scope.launch {
+                                    val result = snackbarHostState.showSnackbar(
+                                        message = "Note Deleted",
+                                        actionLabel = "Undo"
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        viewModel.onEvent(NotesEvent.RestoreNote)
+                                    }
                                 }
                             }
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
+
     }
 
 }

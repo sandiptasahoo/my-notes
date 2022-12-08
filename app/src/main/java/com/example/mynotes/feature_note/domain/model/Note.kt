@@ -13,7 +13,13 @@ data class Note(
     @PrimaryKey val id:Int? = null
 ){
     companion object{
-        val noteColors = listOf(md_theme_light_primary, md_theme_light_tertiary, md_theme_light_error)
+        val noteColors = listOf(
+            md_theme_light_primary,
+            md_theme_light_primaryContainer,
+            md_theme_light_tertiary,
+            md_theme_dark_error,
+            md_theme_light_error
+        )
     }
 
     class InvalidNoteException(message: String): Exception(message)

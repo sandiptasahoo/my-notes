@@ -38,7 +38,6 @@ fun AddEditNoteScreen(
 
     val titleState = viewModel.noteTitle.value
     val contentState = viewModel.noteContent.value
-    val scaffoldState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val noteBackgroundAnimatable = remember {
@@ -72,7 +71,7 @@ fun AddEditNoteScreen(
                 onClick = {
                     viewModel.onEvent(AddEditNoteEvent.SaveNote)
                 },
-                Modifier.background(color = MaterialTheme.colorScheme.primary)
+                //Modifier.background(color = MaterialTheme.colorScheme.primary)
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Save Note")
             }
